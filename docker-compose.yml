@@ -428,7 +428,7 @@ services:
 
   billing-engine:
     <<: *java-service
-    image: ghcr.io/${GHCR_ORG:-prasannakrishna}/commart-billing-engine:latest
+    image: ghcr.io/${GHCR_ORG:-prasannakrishna}/commart-billing-svc:latest
     container_name: billing-engine
     ports: ["8135:8135"]
     environment:
