@@ -262,6 +262,7 @@ services:
     environment:
       <<: *java-env
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cartdb
+      SPRING_DATA_MONGODB_DATABASE: cartdb
 
   order-service:
     <<: *java-service
