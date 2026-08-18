@@ -165,6 +165,37 @@ services:
   # PLATFORM INFRA SERVICES
   # ═══════════════════════════════════════════════════════════════════════════
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: keycloak
+    command: start-dev
+    ports:
+      - "8080:8080"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloakdb
+      KC_DB_USERNAME: commart
+      KC_DB_PASSWORD: ${DB_PASSWORD:-commart123}
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin123}
+      KC_HOSTNAME: auth.commart.co.in
+      KC_PROXY_HEADERS: xforwarded
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\n\r\n' >&3 && cat <&3 | grep -q '200'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+      - commart
+
   config-server:
     image: ghcr.io/${GHCR_ORG:-prasannakrishna}/commart-config-server:latest
     container_name: config-server
@@ -199,6 +230,8 @@ services:
     environment:
       <<: *java-env
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/authdb
+    volumes:
+      - auth_jwks:/root/.scm
 
   user-service:
     <<: *java-service
@@ -507,6 +540,7 @@ volumes:
   kafka_data:
   redis_data:
   es_data:
+  auth_jwks:
 
 networks:
   commart:
