@@ -392,6 +392,15 @@ services:
       <<: *java-env
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shipmentdb
 
+  shipment-package-service:
+    <<: *java-service
+    image: ghcr.io/${GHCR_ORG:-prasannakrishna}/commart-shipment-package-service:latest
+    container_name: shipment-package-service
+    ports: ["8111:8111"]
+    environment:
+      <<: *java-env
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shipmentdb
+
   label-generator:
     <<: *java-service
     image: ghcr.io/${GHCR_ORG:-prasannakrishna}/commart-label-generator:latest
