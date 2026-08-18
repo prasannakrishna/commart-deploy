@@ -337,10 +337,11 @@ services:
     <<: *java-service
     image: ghcr.io/${GHCR_ORG:-prasannakrishna}/commart-order-grouping-service:latest
     container_name: order-grouping-service
-    ports: ["8088:8088"]
+    ports: ["8090:8090"]
     environment:
       <<: *java-env
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/orderdb
+      SERVER_PORT: "8090"
 
   wms-service:
     <<: *java-service
