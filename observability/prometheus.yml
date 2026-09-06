@@ -1,0 +1,183 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: [localhost:9090]
+
+  # ── Application services ─────────────────────────────────────────────────
+  - job_name: user-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [user-service:8087]
+        labels: { service: user-service }
+
+  - job_name: auth-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [auth-service:8097]
+        labels: { service: auth-service }
+
+  - job_name: customer-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [customer-service:8082]
+        labels: { service: customer-service }
+
+  - job_name: seller-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [seller-service:8088]
+        labels: { service: seller-service }
+
+  - job_name: cart-manager
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [cart-manager:8091]
+        labels: { service: cart-manager }
+
+  - job_name: order-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [order-service:8093]
+        labels: { service: order-service }
+
+  - job_name: order-grouping-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [order-grouping-service:8090]
+        labels: { service: order-grouping-service }
+
+  - job_name: catalog-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [catalog-service:8098]
+        labels: { service: catalog-service }
+
+  - job_name: community-manager
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [community-manager:8081]
+        labels: { service: community-manager }
+
+  - job_name: payment-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [payment-service:8085]
+        labels: { service: payment-service }
+
+  - job_name: notification-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [notification-service:8096]
+        labels: { service: notification-service }
+
+  - job_name: carrier-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [carrier-service:8083]
+        labels: { service: carrier-service }
+
+  - job_name: delivery-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [delivery-service:8100]
+        labels: { service: delivery-service }
+
+  - job_name: shipment-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [shipment-service:8086]
+        labels: { service: shipment-service }
+
+  - job_name: shipment-package-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [shipment-package-service:8111]
+        labels: { service: shipment-package-service }
+
+  - job_name: transport-planner
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [transport-planner:8108]
+        labels: { service: transport-planner }
+
+  - job_name: label-generator
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [label-generator:8103]
+        labels: { service: label-generator }
+
+  - job_name: allocation-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [allocation-service:8109]
+        labels: { service: allocation-service }
+
+  - job_name: wms-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [wms-service:8095]
+        labels: { service: wms-service }
+
+  - job_name: store-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [store-service:8092]
+        labels: { service: store-service }
+
+  - job_name: feed-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [feed-service:8101]
+        labels: { service: feed-service }
+
+  - job_name: supply-mate-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [supply-mate-service:8118]
+        labels: { service: supply-mate-service }
+
+  - job_name: billing-engine
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [billing-engine:8135]
+        labels: { service: billing-engine }
+
+  - job_name: subscription-billing
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [subscription-billing:8136]
+        labels: { service: subscription-billing }
+
+  - job_name: contract-manager
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [contract-manager:8105]
+        labels: { service: contract-manager }
+
+  - job_name: finance-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [finance-service:8107]
+        labels: { service: finance-service }
+
+  - job_name: escrow-gateway
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [escrow-gateway:8130]
+        labels: { service: escrow-gateway }
+
+  - job_name: lineage-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [lineage-service:8145]
+        labels: { service: lineage-service }
+
+  - job_name: config-server
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [config-server:8888]
+        labels: { service: config-server }

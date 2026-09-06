@@ -1,0 +1,85 @@
+# Commart Observability Stack
+# Joined to commart-deploy_commart network — can reach all services by container name
+# Start: docker compose -f observability/docker-compose.yml up -d
+# Stop:  docker compose -f observability/docker-compose.yml down
+
+services:
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: loki
+    user: "0"
+    command: ["-config.file=/etc/loki/config.yml"]
+    volumes:
+      - ./loki-config.yml:/etc/loki/config.yml
+      - loki_data:/var/loki
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    networks:
+      - commart
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: promtail
+    user: "0"
+    command: ["-config.file=/etc/promtail/config.yml"]
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    depends_on:
+      - loki
+    networks:
+      - commart
+
+  prometheus:
+    image: prom/prometheus:v2.51.1
+    container_name: prometheus
+    user: "0"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=1d"
+      - "--storage.tsdb.retention.size=1GB"
+      - "--web.enable-lifecycle"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - commart
+
+  grafana:
+    image: grafana/grafana:10.4.1
+    container_name: grafana
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+      GF_AUTH_DISABLE_LOGIN_FORM: "false"
+      GF_SERVER_ROOT_URL: "https://api.commart.co.in/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - loki
+    restart: unless-stopped
+    networks:
+      - commart
+
+volumes:
+  loki_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  commart:
+    external: true
+    name: commart-deploy_commart

@@ -1,0 +1,46 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: docker-containers
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+        filters:
+          - name: network
+            values: [commart-deploy_commart]
+    relabel_configs:
+      # Use container name as the service label
+      - source_labels: [__meta_docker_container_name]
+        regex: /(.*)
+        target_label: service
+      # Keep the container id for dedup
+      - source_labels: [__meta_docker_container_id]
+        target_label: container_id
+      # Drop prometheus/loki/grafana/promtail self-logs (noisy infra)
+      - source_labels: [service]
+        regex: prometheus|loki|grafana|promtail
+        action: drop
+    pipeline_stages:
+      # Parse Docker JSON log format
+      - json:
+          expressions:
+            output: log
+            stream: stream
+            timestamp: time
+      - output:
+          source: output
+      - timestamp:
+          source: timestamp
+          format: RFC3339Nano
+          fallback_formats:
+            - RFC3339
+      - labels:
+          stream:
